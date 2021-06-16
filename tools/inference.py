@@ -15,6 +15,7 @@ def parse_args():
     parser.add_argument('config', type=str, help='Config file path')
     parser.add_argument('checkpoint', type=str, help='Checkpoint file path')
     parser.add_argument('image', type=str, help='input image path')
+    parser.add_argument('gpus', type=str, help='target gpus')
     args = parser.parse_args()
 
     return args
@@ -26,8 +27,11 @@ def main():
     cfg_path = args.config
     cfg = Config.fromfile(cfg_path)
 
+    selected_gpus = [int(_.strip()) for _ in args.gpus.split(',')]
+
     deploy_cfg = cfg['deploy']
     common_cfg = cfg.get('common')
+    common_cfg['gpu_id'] = selected_gpus
 
     runner = InferenceRunner(deploy_cfg, common_cfg)
     runner.load_checkpoint(args.checkpoint)

@@ -12,6 +12,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Test.')
     parser.add_argument('config', type=str, help='Config file path')
     parser.add_argument('checkpoint', type=str, help='Checkpoint file path')
+    parser.add_argument('gpus', type=str, help='target gpus')
     args = parser.parse_args()
 
     return args
@@ -30,10 +31,13 @@ def main():
     workdir = os.path.join(root_workdir, fname)
     os.makedirs(workdir, exist_ok=True)
 
+    selected_gpus = [int(_.strip()) for _ in args.gpus.split(',')]
+
     test_cfg = cfg['test']
     deploy_cfg = cfg['deploy']
     common_cfg = cfg['common']
     common_cfg['workdir'] = workdir
+    common_cfg['gpu_id'] = selected_gpus
 
     runner = TestRunner(test_cfg, deploy_cfg, common_cfg)
     runner.load_checkpoint(args.checkpoint)

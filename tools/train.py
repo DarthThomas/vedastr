@@ -11,6 +11,7 @@ from vedastr.utils import Config
 def parse_args():
     parser = argparse.ArgumentParser(description='Train.')
     parser.add_argument('config', type=str, help='config file path')
+    parser.add_argument('gpus', type=str, help='target gpus')
     args = parser.parse_args()
 
     return args
@@ -29,10 +30,13 @@ def main():
     workdir = os.path.join(root_workdir, fname)
     os.makedirs(workdir, exist_ok=True)
 
+    selected_gpus = [int(_.strip()) for _ in args.gpus.split(',')]
+
     train_cfg = cfg['train']
     deploy_cfg = cfg['deploy']
     common_cfg = cfg['common']
     common_cfg['workdir'] = workdir
+    common_cfg['gpu_id'] = selected_gpus
 
     runner = TrainRunner(train_cfg, deploy_cfg, common_cfg)
     runner()
