@@ -133,33 +133,36 @@ data
 
 1. Config
 
-Modify some configuration accordingly in the config file like `configs/tps_resnet_bilstm_attn.py`
+Modify configuration files in [configs/](configs) according to your needs(e.g. [configs/tps_resnet_bilstm_attn.py](configs/tps_resnet_bilstm_attn.py)). 
 
 2. Run
 
 ```shell
-python tools/train.py configs/tps_resnet_bilstm_attn.py 
+# train using GPUs with gpu_id 0, 1, 2, 3
+python tools/train.py configs/tps_resnet_bilstm_attn.py "0, 1, 2, 3" 
 ```
 
-Snapshots and logs will be generated at `vedastr/workdir` by default.
+Snapshots and logs by default will be generated at `${vedastr_root}/workdir/name_of_config_file`(you can specify workdir in config files).
 
 ## Test
 
 1. Config
 
-Modify some configuration accordingly in the config file like `configs/tps_resnet_bilstm_attn.py `
+Modify configuration as you wish(e.g. [configs/tps_resnet_bilstm_attn.py](configs/tps_resnet_bilstm_attn.py)).
 
 2. Run
 
 ```shell
-python tools/test.py configs/tps_resnet_bilstm_attn.py checkpoint_path
+# test using GPUs with gpu_id 0, 1
+./tools/dist_test.sh configs/tps_resnet_bilstm_attn.py path/to/checkpoint.pth "0, 1" 
 ```
 
 ## Inference
 1. Run
 
 ```shell
-python tools/inference.py configs/tps_resnet_bilstm_attn.py checkpoint_path img_path
+# inference using GPUs with gpu_id 0
+python tools/inference.py configs/tps_resnet_bilstm_attn.py checkpoint_path img_path "0"
 ```
 
 ## Deploy
