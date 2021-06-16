@@ -27,11 +27,9 @@ def main():
     cfg_path = args.config
     cfg = Config.fromfile(cfg_path)
 
-    selected_gpus = [int(_.strip()) for _ in args.gpus.split(',')]
-
     deploy_cfg = cfg['deploy']
     common_cfg = cfg.get('common')
-    common_cfg['gpu_id'] = selected_gpus
+    deploy_cfg['gpu_id'] = args.gpus.replace(" ", "")
 
     runner = InferenceRunner(deploy_cfg, common_cfg)
     runner.load_checkpoint(args.checkpoint)

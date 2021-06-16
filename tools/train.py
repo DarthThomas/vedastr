@@ -30,13 +30,11 @@ def main():
     workdir = os.path.join(root_workdir, fname)
     os.makedirs(workdir, exist_ok=True)
 
-    selected_gpus = [int(_.strip()) for _ in args.gpus.split(',')]
-
     train_cfg = cfg['train']
     deploy_cfg = cfg['deploy']
     common_cfg = cfg['common']
     common_cfg['workdir'] = workdir
-    common_cfg['gpu_id'] = selected_gpus
+    deploy_cfg['gpu_id'] = args.gpus.replace(" ", "")
 
     runner = TrainRunner(train_cfg, deploy_cfg, common_cfg)
     runner()
