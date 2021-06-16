@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../../'))
 
 import cv2
-from PIL import Image
+import torch
 from volksdep.benchmark import benchmark
 
 from vedastr.runners import TestRunner
@@ -43,14 +43,18 @@ def main():
     test_cfg = cfg['test']
     deploy_cfg = cfg['deploy']
     common_cfg = cfg['common']
+    if torch.cuda.is_available():
+        device = torch.cuda.current_device()
+        deploy_cfg['gpu_id'] = str(device)
+    else:
+        raise AssertionError('Please use gpu for benchmark.')
 
     runner = TestRunner(test_cfg, deploy_cfg, common_cfg)
-    assert runner.use_gpu, 'Please use gpu for benchmark.'
     runner.load_checkpoint(args.checkpoint)
 
     # image = Image.open(args.image)
     image = cv2.imread(args.image)
-    aug= runner.transform(image=image,label='')
+    aug = runner.transform(image=image, label='')
     image, dummy_label = aug['image'], aug['label']
     image = image.unsqueeze(0)
     input_len = runner.converter.test_encode(1)[0]

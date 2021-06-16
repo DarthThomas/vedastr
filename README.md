@@ -191,7 +191,7 @@ The result of resnet_ctc is as follows(test device: Jetson AGX Xavier, CUDA:10.2
 3. Export model as ONNX or TensorRT engine format
 
 ```python
-python tools/deploy/export.py configs/resnet_ctc.py checkpoint_path image_file_path out_model_path
+CUDA_VISIBLE_DEVICES="0" python tools/torch2onnx.py configs/resnet_ctc.py checkpoint_path image_file_path out_model_path
 ```
 
   More available arguments are detailed in [tools/deploy/export.py](https://github.com/Media-Smart/vedastr/blob/master/tools/deploy/export.py).
