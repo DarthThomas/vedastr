@@ -171,7 +171,9 @@ python tools/inference.py configs/tps_resnet_bilstm_attn.py checkpoint_path img_
 
 2. Benchmark (optional)
 ```python
-python tools/deploy/benchmark.py configs/resnet_ctc.py checkpoint_path image_file_path --calibration_images image_folder_path
+# Benchmark model using GPU with gpu_id 0
+CUDA_VISIBLE_DEVICES="0" python tools/deploy/benchmark.py 
+configs/resnet_ctc.py checkpoint_path out_path --dynamic_shape
 ```
 
 More available arguments are detailed in [tools/deploy/benchmark.py](https://github.com/Media-Smart/vedastr/blob/master/tools/deploy/benchmark.py).
@@ -179,7 +181,7 @@ More available arguments are detailed in [tools/deploy/benchmark.py](https://git
 The result of resnet_ctc is as follows(test device: Jetson AGX Xavier, CUDA:10.2):
 
 | framework  |  version   |     input shape      |         data type         |   throughput(FPS)    |   latency(ms)   |
-|    :-:     |    :-:     |         :-:          |            :-:            |         :-:          |       :-:       |
+|   :---:    |   :---:    |        :---:         |           :---:           |        :---:         |      :---:      |
 |  pytorch   |   1.5.0    |   (1, 1, 32, 100)    |           fp32            |          64          |      15.81      |
 |  tensorrt  |  7.1.0.16  |   (1, 1, 32, 100)    |           fp32            |         109          |      9.66       |
 |  pytorch   |   1.5.0    |   (1, 1, 32, 100)    |           fp16            |         113          |      10.75      |
@@ -188,9 +190,10 @@ The result of resnet_ctc is as follows(test device: Jetson AGX Xavier, CUDA:10.2
 
 
 
-3. Export model as ONNX or TensorRT engine format
+3. Export model to ONNX format
 
 ```python
+# export model to onnx using GPU with gpu_id 0
 CUDA_VISIBLE_DEVICES="0" python tools/torch2onnx.py configs/resnet_ctc.py checkpoint_path image_file_path out_model_path
 ```
 
