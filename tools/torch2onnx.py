@@ -5,6 +5,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../'))
 
 import torch
+import numpy as np
 from volksdep.converters import torch2onnx
 
 from vedastr.runners import InferenceRunner
@@ -48,10 +49,10 @@ def main():
     runner = InferenceRunner(deploy_cfg, common_cfg)
     runner.load_checkpoint(args.checkpoint)
 
-    shape = map(int, args.dummy_input_shape.split(','))
-    image = torch.randn(1, *shape)
+    C, H, W = [int(_.strip()) for _ in args.dummy_input_shape.split(',')]
+    dummy_image = np.random.random_integers(0, 255, (H, W, C)).astype(np.uint8)
 
-    aug = runner.transform(image=image, label='')
+    aug = runner.transform(image=dummy_image, label='')
     image, label = aug['image'], aug['label']
     image = image.unsqueeze(0).cuda()
     dummy_input = (image, runner.converter.test_encode(['']))
